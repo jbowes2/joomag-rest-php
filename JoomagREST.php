@@ -124,7 +124,7 @@ class JoomagREST {
 
         $response = curl_exec($ch);
         $responseArr = json_decode($response, true);
-        return $response;
+        return $responseArr;
     }
 
     public function get($url) {
