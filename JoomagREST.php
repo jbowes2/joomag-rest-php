@@ -127,8 +127,8 @@ class JoomagREST {
         return $responseArr;
     }
 
-    public function get($url) {
-        return $this->sendRequest("GET", $url);
+    public function get($url, $params = array()) {
+        return $this->sendRequest("GET", $url, $params);
     }
 
     public function post($url, $params = array()) {
