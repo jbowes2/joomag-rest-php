@@ -147,7 +147,9 @@ class JoomagREST {
         ksort($params);
 
         $paramsStr = "";
-        foreach($params as $val) {
+        foreach($params as $key => $val) {
+            if( $key == 'pdf' ) continue;
+
             $paramsStr .= $val;
         }
         $sig = hash_hmac('sha256', $method . $url . $paramsStr, $this->secKey);
