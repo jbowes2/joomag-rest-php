@@ -1,4 +1,4 @@
-joomag-rest-ruby
+joomag-rest-php
 ================
 
-Joomag's API Official Ruby Library
+Joomag's API Official PHP Library
