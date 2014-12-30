@@ -124,11 +124,11 @@ class JoomagREST {
 
         $response = curl_exec($ch);
         $responseArr = json_decode($response, true);
-        return $responseArr;
+        return $response;
     }
 
-    public function get($url, $params = array()) {
-        return $this->sendRequest("GET", $url, $params);
+    public function get($url) {
+        return $this->sendRequest("GET", $url);
     }
 
     public function post($url, $params = array()) {
@@ -147,9 +147,7 @@ class JoomagREST {
         ksort($params);
 
         $paramsStr = "";
-        foreach($params as $key => $val) {
-            if( $key == 'pdf' ) continue;
-
+        foreach($params as $val) {
             $paramsStr .= $val;
         }
         $sig = hash_hmac('sha256', $method . $url . $paramsStr, $this->secKey);
@@ -284,42 +282,47 @@ class JoomagREST {
 
     // SUBSCRIBERS /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function getSubscribersList() {
-        $url = "subscribers";
+    public function getSubscribersList() { return $this->getContactsList(); }
+    public function getContactsList() {
+        $url = "contacts";
         return $this->get($url);
     }
 
-    public function getSubscriberDetails($subscriberID) {
-        $url = "subscribers/$subscriberID";
+    public function getSubscriberDetails($contactID) { return $this->getContactDetails($contactID); }
+    public function getContactDetails($contactID) {
+        $url = "contacts/$contactID";
         return $this->get($url);
     }
 
-    public function updateSubscriber($subscriberID, $params) {
-        $url = "subscribers/$subscriberID";
+    public function updateSubscriber($contactID, $params) { return $this->updateContact($contactID, $params); }
+    public function updateContact($contactID, $params) {
+        $url = "contacts/$contactID";
         return $this->put($url, $params);
     }
 
-    public function deleteSubscriber($subscriberID) {
-        $url = "subscribers/$subscriberID";
+    public function deleteSubscriber($contactID) { return $this->deleteContact($contactID); }
+    public function deleteContact($contactID) {
+        $url = "contacts/$contactID";
         return $this->delete($url);
     }
 
-    public function createSubscriber($email, $params) {
+    public function createSubscriber($email, $params) { return $this->createContact($email, $params); }
+    public function createContact($email, $params) {
         $param['email'] = $email;
-        $url = "subscribers";
+        $url = "contacts";
         return $this->post($url, $params);
     }
 
-    public function deliverSubscription($subscriberID, $magazineID) {
-        $url = "subscribers/$subscriberID";
+    public function deliverSubscription($contactID, $magazineID) {
+        $url = "contacts/$contactID";
         $params = array(
             'magazine_ID' => $magazineID
         );
         return $this->post($url, $params);
     }
 
-    public function deliverIssue($subscriberID, $magazineID) {
-        $url = "subscribers/$subscriberID";
+    public function deliverIssue($contactID, $magazineID) {
+        $url = "contacts/$contactID";
         $params = array(
             'magazine_ID' => $magazineID
         );
