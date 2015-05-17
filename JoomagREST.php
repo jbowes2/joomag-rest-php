@@ -146,6 +146,8 @@ class JoomagREST {
     private function calculateSignature($method, $url, $params) {
         ksort($params);
 
+        unset($params['pdf']);
+        
         $paramsStr = "";
         foreach($params as $val) {
             $paramsStr .= $val;
@@ -327,5 +329,15 @@ class JoomagREST {
             'magazine_ID' => $magazineID
         );
         return $this->post($url, $params);
+    }
+
+    public function createToken ( $email, $params ) {
+        $url = "contacts/$email/tokens";
+        return $this->post($url, $params);
+    }
+
+    public function deleteAllTokens ( $email ) {
+        $url = "contacts/$email/tokens";
+        return $this->delete($url);
     }
 }
