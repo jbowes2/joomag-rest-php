@@ -124,7 +124,7 @@ class JoomagREST {
 
         $response = curl_exec($ch);
         $responseArr = json_decode($response, true);
-        return $response;
+        return $responseArr;
     }
 
     public function get($url) {
@@ -147,7 +147,7 @@ class JoomagREST {
         ksort($params);
 
         unset($params['pdf']);
-        
+
         $paramsStr = "";
         foreach($params as $val) {
             $paramsStr .= $val;
@@ -224,6 +224,16 @@ class JoomagREST {
         } else {
             throw new Exception('PDF file not found');
         }
+    }
+
+    /**
+     * @param string $issueTempID
+     * @return array
+     * @throws Exception
+     */
+    public function getIssueStatus( $issueTempID ) {
+        $url = "issues/$issueTempID/status";
+        return $this->get($url);
     }
 
     /**
