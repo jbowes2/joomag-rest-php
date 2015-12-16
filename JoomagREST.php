@@ -115,6 +115,7 @@ class JoomagREST {
         curl_setopt($ch, CURLOPT_URL, $url);
         if ($method == "POST") {
             curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         } else {
             $paramQueryStr = http_build_query($params);
