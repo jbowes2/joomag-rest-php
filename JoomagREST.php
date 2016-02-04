@@ -115,7 +115,6 @@ class JoomagREST {
         curl_setopt($ch, CURLOPT_URL, $url);
         if ($method == "POST") {
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         } else {
             $paramQueryStr = http_build_query($params);
@@ -128,8 +127,8 @@ class JoomagREST {
         return $responseArr;
     }
 
-    public function get($url) {
-        return $this->sendRequest("GET", $url);
+    public function get($url, $params = array()) {
+        return $this->sendRequest("GET", $url, $params);
     }
 
     public function post($url, $params = array()) {
@@ -220,7 +219,7 @@ class JoomagREST {
     public function createIssueFromPDF($magazineID, $filePath, $params) {
         if (file_exists($filePath)) {
             $url = "magazines/$magazineID";
-            $params['pdf'] = "@$filePath";
+            $params['pdf'] = new CURLFile($filePath);
             return $this->sendRequest("POST", $url, $params);
         } else {
             throw new Exception('PDF file not found');
