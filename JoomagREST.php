@@ -4,7 +4,7 @@
  * Class JoomagREST
  */
 class JoomagREST {
-    const BASE_URL = "http://www.joomag.com/api/2.0/";
+    const BASE_URL = "https://www.joomag.com/api/2.0/";
 
     const CAT_GENERAL = 6;
     const CAT_PRO_SPORTS = 7;
