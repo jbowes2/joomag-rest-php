@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Joomag;
 
-class JoomagTaxonomies {
+class JoomagTaxonomies
+{
     private $joomagCategoryIdToNameMap = [
         6 => "General",
         7 => "Pro Sports",
