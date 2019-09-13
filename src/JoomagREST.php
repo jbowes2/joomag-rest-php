@@ -95,15 +95,15 @@ class JoomagREST {
      * @param array $files list of files
      * @return array
      */
-    public function sendRequest($method, $url, $params = array(), $files = array()) {
+    public function sendRequest($method, $url, $params = [], $files = []) {
         $url = self::BASE_URL . $url;
 
         $sig = $this->calculateSignature($method, $url, $params);
 
-        $headers = array(
+        $headers = [
             "key: {$this->apiKey}",
             "sig: $sig"
-        );
+        ];
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -126,19 +126,19 @@ class JoomagREST {
         return $responseArr;
     }
 
-    public function get($url, $params = array()) {
+    public function get($url, $params = []) {
         return $this->sendRequest("GET", $url, $params);
     }
 
-    public function post($url, $params = array()) {
+    public function post($url, $params = []) {
         return $this->sendRequest("POST", $url, $params);
     }
 
-    public function put($url, $params = array()) {
+    public function put($url, $params = []) {
         return $this->sendRequest("PUT", $url, $params);
     }
 
-    public function delete($url, $params = array()) {
+    public function delete($url, $params = []) {
         return $this->sendRequest("DELETE", $url, $params);
     }
 
@@ -171,7 +171,7 @@ class JoomagREST {
      * @param array $params
      * @return array
      */
-    public function createMagazine($title, $description, $params = array()) {
+    public function createMagazine($title, $description, $params = []) {
         $url = "magazines";
         $params['title'] = $title;
         $params['description'] = $description;
@@ -185,7 +185,7 @@ class JoomagREST {
      * @param array $params
      * @return array
      */
-    public function updateMagazine($magazineID, $params = array()) {
+    public function updateMagazine($magazineID, $params = []) {
         $url = "magazines/$magazineID";
         return $this->put($url, $params);
     }
@@ -244,11 +244,11 @@ class JoomagREST {
      */
     public function deleteMagazine($magazineID, $confirm1, $confirm2, $confirm3) {
         $url = "magazines/$magazineID";
-        $params = array(
+        $params = [
             'confirm' => $confirm1,
             'confirm2' => $confirm2,
             'confirm3' => $confirm3
-        );
+        ];
         return $this->delete($url, $params);
     }
 
@@ -262,9 +262,9 @@ class JoomagREST {
     public function publishIssue( $issueID, $privacy ) {
         $url = "issues/$issueID/publish-state";
 
-        $params = array(
+        $params = [
             'privacy' => $privacy
-        );
+        ];
 
         return $this->sendRequest("PUT", $url,$params);
     }
@@ -326,17 +326,17 @@ class JoomagREST {
 
     public function deliverSubscription($contactID, $magazineID) {
         $url = "contacts/$contactID";
-        $params = array(
+        $params = [
             'magazine_ID' => $magazineID
-        );
+        ];
         return $this->post($url, $params);
     }
 
     public function deliverIssue($contactID, $magazineID) {
         $url = "contacts/$contactID";
-        $params = array(
+        $params = [
             'magazine_ID' => $magazineID
-        );
+        ];
         return $this->post($url, $params);
     }
 
