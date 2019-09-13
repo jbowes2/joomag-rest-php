@@ -236,10 +236,10 @@ class JoomagREST
     {
         if (file_exists($filePath)) {
             $url = "magazines/$magazineID";
-            $params['pdf'] = new CURLFile($filePath);
+            $params['pdf'] = new \CURLFile($filePath);
             return $this->sendRequest("POST", $url, $params);
         } else {
-            throw new Exception('PDF file not found');
+            throw new \Exception('PDF file not found');
         }
     }
 
