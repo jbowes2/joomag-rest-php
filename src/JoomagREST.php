@@ -1,8 +1,7 @@
 <?php
 
-/**
- * Class JoomagREST
- */
+namespace Joomag;
+
 class JoomagREST {
     const BASE_URL = "https://www.joomag.com/api/2.0/";
 
