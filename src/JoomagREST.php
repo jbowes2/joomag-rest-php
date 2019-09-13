@@ -230,7 +230,7 @@ class JoomagREST
      * @param $filePath
      * @param $params
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function createIssueFromPDF(string $magazineID, string $filePath, array $params): array
     {
@@ -246,7 +246,7 @@ class JoomagREST
     /**
      * @param string $issueTempID
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function getIssueStatus(string $issueTempID): array
     {
