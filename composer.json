@@ -1,0 +1,20 @@
+{
+    "name": "joomag/rest",
+    "description": "Joomag's API Official PHP Library",
+    "type": "library",
+    "require": {
+        "php": ">=7.1",
+        "ext-curl": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gurgen Ghukasyan"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Joomag\\": "src/"
+        }
+    }
+}

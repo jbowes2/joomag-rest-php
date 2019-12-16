@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
-/**
- * Class JoomagREST
- */
-class JoomagREST {
+namespace Joomag;
+
+class JoomagREST
+{
     const BASE_URL = "https://www.joomag.com/api/2.0/";
 
     const CAT_GENERAL = 6;
@@ -77,14 +78,18 @@ class JoomagREST {
     const CAT_OCEAN_SPORTS = 207;
     const CAT_ROMANCE = 210;
 
+    /** @var string */
     private $apiKey;
+
+    /** @var string */
     private $secKey;
 
     /**
      * @param $apiKey string
      * @param $apiSecretKey string
      */
-    public function __construct($apiKey, $apiSecretKey) {
+    public function __construct(string $apiKey, string $apiSecretKey)
+    {
         $this->apiKey = $apiKey;
         $this->secKey = $apiSecretKey;
     }
@@ -96,15 +101,16 @@ class JoomagREST {
      * @param array $files list of files
      * @return array
      */
-    public function sendRequest($method, $url, $params = array(), $files = array()) {
+    public function sendRequest(string $method, string $url, array $params = [], array $files = []): array
+    {
         $url = self::BASE_URL . $url;
 
         $sig = $this->calculateSignature($method, $url, $params);
 
-        $headers = array(
+        $headers = [
             "key: {$this->apiKey}",
             "sig: $sig"
-        );
+        ];
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -127,29 +133,34 @@ class JoomagREST {
         return $responseArr;
     }
 
-    public function get($url, $params = array()) {
+    public function get(string $url, array $params = []): array
+    {
         return $this->sendRequest("GET", $url, $params);
     }
 
-    public function post($url, $params = array()) {
+    public function post(string $url, array $params = []): array
+    {
         return $this->sendRequest("POST", $url, $params);
     }
 
-    public function put($url, $params = array()) {
+    public function put(string $url, array $params = []): array
+    {
         return $this->sendRequest("PUT", $url, $params);
     }
 
-    public function delete($url, $params = array()) {
+    public function delete(string $url, array $params = []): array
+    {
         return $this->sendRequest("DELETE", $url, $params);
     }
 
-    private function calculateSignature($method, $url, $params) {
+    private function calculateSignature(string $method, string $url, array $params): string
+    {
         ksort($params);
 
         unset($params['pdf']);
 
         $paramsStr = "";
-        foreach($params as $val) {
+        foreach ($params as $val) {
             $paramsStr .= $val;
         }
         $sig = hash_hmac('sha256', $method . $url . $paramsStr, $this->secKey);
@@ -161,7 +172,8 @@ class JoomagREST {
     /**
      * @return array
      */
-    public function getMagazinesList() {
+    public function getMagazinesList(): array
+    {
         $url = "magazines";
         return $this->get($url);
     }
@@ -172,7 +184,8 @@ class JoomagREST {
      * @param array $params
      * @return array
      */
-    public function createMagazine($title, $description, $params = array()) {
+    public function createMagazine(string $title, string $description, array $params = []): array
+    {
         $url = "magazines";
         $params['title'] = $title;
         $params['description'] = $description;
@@ -186,7 +199,8 @@ class JoomagREST {
      * @param array $params
      * @return array
      */
-    public function updateMagazine($magazineID, $params = array()) {
+    public function updateMagazine(string $magazineID, array $params = []): array
+    {
         $url = "magazines/$magazineID";
         return $this->put($url, $params);
     }
@@ -195,7 +209,8 @@ class JoomagREST {
      * @param $magazineID
      * @return array
      */
-    public function listIssues($magazineID) {
+    public function listIssues(string $magazineID): array
+    {
         $url = "magazines/$magazineID/issues";
         return $this->get($url);
     }
@@ -204,7 +219,8 @@ class JoomagREST {
      * @param $magazineID
      * @return array
      */
-    public function getMagazineDetails($magazineID) {
+    public function getMagazineDetails(string $magazineID): array
+    {
         $url = "magazines/$magazineID";
         return $this->get($url);
     }
@@ -214,24 +230,26 @@ class JoomagREST {
      * @param $filePath
      * @param $params
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
-    public function createIssueFromPDF($magazineID, $filePath, $params) {
+    public function createIssueFromPDF(string $magazineID, string $filePath, array $params): array
+    {
         if (file_exists($filePath)) {
             $url = "magazines/$magazineID";
-            $params['pdf'] = new CURLFile($filePath);
+            $params['pdf'] = new \CURLFile($filePath);
             return $this->sendRequest("POST", $url, $params);
         } else {
-            throw new Exception('PDF file not found');
+            throw new \Exception('PDF file not found');
         }
     }
 
     /**
      * @param string $issueTempID
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
-    public function getIssueStatus( $issueTempID ) {
+    public function getIssueStatus(string $issueTempID): array
+    {
         $url = "issues/$issueTempID/status";
         return $this->get($url);
     }
@@ -243,110 +261,146 @@ class JoomagREST {
      * @param $confirm3 - should have value of "and I will not contact customer support asking to bring it back"
      * @return array
      */
-    public function deleteMagazine($magazineID, $confirm1, $confirm2, $confirm3) {
+    public function deleteMagazine(string $magazineID, string $confirm1, string $confirm2, string $confirm3): array
+    {
         $url = "magazines/$magazineID";
-        $params = array(
+        $params = [
             'confirm' => $confirm1,
             'confirm2' => $confirm2,
             'confirm3' => $confirm3
-        );
+        ];
         return $this->delete($url, $params);
     }
 
     // ISSUE PUBLISH STATE /////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function getIssuePublishState($issueID) {
+    public function getIssuePublishState(string $issueID): array
+    {
         $url = "issues/$issueID/publish-state";
         return $this->get($url);
     }
 
-    public function publishIssue( $issueID, $privacy ) {
+    public function publishIssue(string $issueID, string $privacy): array
+    {
         $url = "issues/$issueID/publish-state";
 
-        $params = array(
+        $params = [
             'privacy' => $privacy
-        );
+        ];
 
-        return $this->sendRequest("PUT", $url,$params);
+        return $this->sendRequest("PUT", $url, $params);
     }
 
-    public function unpublishIssue($issueID) {
+    public function unpublishIssue(string $issueID): array
+    {
         $url = "issues/$issueID/publish-state";
         return $this->delete($url);
     }
 
     // ISSUE ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function deleteIssue($issueID) {
+    public function deleteIssue(string $issueID): array
+    {
         $url = "issues/$issueID";
         return $this->delete($url);
     }
 
-    public function getIssueDetails($issueID) {
+    public function getIssueDetails(string $issueID): array
+    {
         $url = "issues/$issueID";
         return $this->get($url);
     }
 
-    public function updateIssue($issueID, $params) {
+    public function updateIssue(string $issueID, array $params): array
+    {
         $url = "issues/$issueID";
         return $this->put($url, $params);
     }
 
     // SUBSCRIBERS /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function getSubscribersList() { return $this->getContactsList(); }
-    public function getContactsList() {
+    public function getSubscribersList():array
+    {
+        return $this->getContactsList();
+    }
+
+    public function getContactsList(): array
+    {
         $url = "contacts";
         return $this->get($url);
     }
 
-    public function getSubscriberDetails($contactID) { return $this->getContactDetails($contactID); }
-    public function getContactDetails($contactID) {
+    public function getSubscriberDetails(string $contactID): array
+    {
+        return $this->getContactDetails($contactID);
+    }
+
+    public function getContactDetails(string $contactID): array
+    {
         $url = "contacts/$contactID";
         return $this->get($url);
     }
 
-    public function updateSubscriber($contactID, $params) { return $this->updateContact($contactID, $params); }
-    public function updateContact($contactID, $params) {
+    public function updateSubscriber(string $contactID, array $params): array
+    {
+        return $this->updateContact($contactID, $params);
+    }
+
+    public function updateContact(string $contactID, array $params): array
+    {
         $url = "contacts/$contactID";
         return $this->put($url, $params);
     }
 
-    public function deleteSubscriber($contactID) { return $this->deleteContact($contactID); }
-    public function deleteContact($contactID) {
+    public function deleteSubscriber(string $contactID): array
+    {
+        return $this->deleteContact($contactID);
+    }
+
+    public function deleteContact(string $contactID): array
+    {
         $url = "contacts/$contactID";
         return $this->delete($url);
     }
 
-    public function createSubscriber($email, $params) { return $this->createContact($email, $params); }
-    public function createContact($email, $params) {
+    public function createSubscriber(string $email, array $params): array
+    {
+        return $this->createContact($email, $params);
+    }
+
+    public function createContact(string $email, array $params): array
+    {
         $param['email'] = $email;
         $url = "contacts";
         return $this->post($url, $params);
     }
 
-    public function deliverSubscription($contactID, $magazineID) {
+    public function deliverSubscription(string $contactID, string $magazineID): array
+    {
         $url = "contacts/$contactID";
-        $params = array(
+        $params = [
             'magazine_ID' => $magazineID
-        );
+        ];
         return $this->post($url, $params);
     }
 
-    public function deliverIssue($contactID, $magazineID) {
+    public function deliverIssue(string $contactID, string $magazineID): array
+    {
         $url = "contacts/$contactID";
-        $params = array(
+        $params = [
             'magazine_ID' => $magazineID
-        );
+        ];
         return $this->post($url, $params);
     }
 
-    public function createToken ( $email, $params ) {
+    public function createToken(string $email, array $params): array
+    {
         $url = "contacts/$email/tokens";
         return $this->post($url, $params);
     }
 
-    public function deleteAllTokens ( $email ) {
+    public function deleteAllTokens(string $email): array
+    {
         $url = "contacts/$email/tokens";
         return $this->delete($url);
     }
